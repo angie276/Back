@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 
-// Importar modelos (esto registra las asociaciones en Sequelize)
+// Importar modelos
 import './src/models/alumno.js';
 import './src/models/proyecto.js';
 import './src/models/tarea.js';
@@ -16,11 +16,20 @@ import recursoRoutes from './src/routes/recursos.js';
 
 const app = express();
 
-// Middlewares
-app.use(cors());
+const corsOptions = {
+  origin: '*', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false 
+};
+
+
+// 2. Aplicar CORS
+app.use(cors(corsOptions));
+
+// 3. Middlewares
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
-
 // Endpoints
 app.use('/api/alumnos', alumnoRoutes);
 app.use('/api/proyectos', proyectoRoutes);
