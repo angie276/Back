@@ -52,6 +52,37 @@ class ProyectosController {
             return res.status(400).json({ exito: false, mensaje: error.message });
         }
     }
+
+    async quitarMiembro(req, res, next) {
+        try {
+            const { id, miembroId } = req.params;
+            const project = await ProyectosService.getProyectoById(id);
+            if (!project) {
+                return res.status(404).json({ exito: false, mensaje: 'Proyecto no encontrado.' });
+            }
+            if (project.creadorId !== req.usuario?.id) {
+                return res.status(403).json({ exito: false, mensaje: 'No autorizado para quitar miembros.' });
+            }
+            await ProyectosService.quitarMiembro(id, miembroId);
+            return res.status(200).json({ exito: true, mensaje: 'Miembro quitado con éxito.' });
+        } catch (error) {
+            return res.status(400).json({ exito: false, mensaje: error.message });
+        }
+    }
+
+    async salirDeGrupo(req, res, next) {
+        try {
+            const { id } = req.params;
+            const alumnoId = req.usuario?.id;
+            if (!alumnoId) {
+                return res.status(401).json({ exito: false, mensaje: 'No autorizado.' });
+            }
+            await ProyectosService.quitarMiembro(id, alumnoId);
+            return res.status(200).json({ exito: true, mensaje: 'Has salido del grupo con éxito.' });
+        } catch (error) {
+            return res.status(400).json({ exito: false, mensaje: error.message });
+        }
+    }
 }
 
 export default new ProyectosController();

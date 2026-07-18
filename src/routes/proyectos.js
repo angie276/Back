@@ -9,5 +9,7 @@ router.get('/:id', authMiddleware, proyectosController.getProyectoById);
 router.post('/', authMiddleware, proyectosController.crearProyecto);
 router.post('/unirse', authMiddleware, proyectosController.unirseProyectoPorCodigo);
 router.delete('/:id', authMiddleware, proyectosController.eliminarProyecto);
+router.delete('/:id/miembros/:miembroId', authMiddleware, proyectosController.quitarMiembro);
+router.delete('/:id/salir', authMiddleware, proyectosController.salirDeGrupo);
 
 export default router;

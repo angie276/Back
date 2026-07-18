@@ -84,13 +84,28 @@ export const recalcularEstadisticasProyecto = async (proyectoId) => {
     await repository.update({ tasksTotal: total, tasksCompleted: completadas, progress }, proyectoId);
 };
 
+const quitarMiembro = async (proyectoId, alumnoId) => {
+    if (!proyectoId || !alumnoId) {
+        throw new Error('El ID del proyecto y el ID del alumno son obligatorios.');
+    }
+    // Eliminar la vinculación
+    await AlumnoProyecto.destroy({
+        where: { proyectoId: parseInt(proyectoId), alumnoId: parseInt(alumnoId) }
+    });
+
+    // Actualizar cantidad de miembros del proyecto
+    const vinculaciones = await AlumnoProyecto.count({ where: { proyectoId: parseInt(proyectoId) } });
+    await repository.update({ membersCount: vinculaciones }, parseInt(proyectoId));
+};
+
 const proyectoService = {
     getProyectos,
     getProyectoById,
     crearProyecto,
     eliminarProyecto,
     unirseProyectoPorCodigo,
-    recalcularEstadisticasProyecto
+    recalcularEstadisticasProyecto,
+    quitarMiembro
 };
 
 export default proyectoService;
